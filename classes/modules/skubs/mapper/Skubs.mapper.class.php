@@ -2,13 +2,17 @@
 
 class PluginSkubs_ModuleSkubs_MapperSkubs extends Mapper
 {
-	public function GetSkubStat($sUserId,$iLimit) {
-		$sql = "SELECT 
+    public function GetSkubStat($sUserId, $iLimit)
+    {
+        $table_topic = Config::Get('db.table.topic');
+        $table_blog = Config::Get('db.table.blog');
+
+        $sql = "SELECT 
 					b.*,
 					count(*) as blog_skubs
 				FROM 
-					".Config::Get('db.table.topic')." as t,
-					".Config::Get('db.table.blog')." as b	
+					{$table_topic} as t,
+					{$table_blog} as b	
 				WHERE 	
 					t.user_id = ?d
 					AND
@@ -20,14 +24,13 @@ class PluginSkubs_ModuleSkubs_MapperSkubs extends Mapper
 				LIMIT 0, ?d 
 				;	
 					";
-		$aReturn=array();
-		if ($aRows=$this->oDb->select($sql,$sUserId,$iLimit)) {
-			foreach ($aRows as $aRow) {
-				$aReturn[]=Engine::GetEntity('Blog',$aRow);
-			}
-		}
-		return $aReturn;
-	}
+        $aReturn = array();
+        if ($aRows = $this->oDb->select($sql, $sUserId, $iLimit)) {
+            foreach ($aRows as $aRow) {
+                $aReturn[] = Engine::GetEntity('Blog', $aRow);
+            }
+        }
+        return $aReturn;
+    }
 }
 
-?>
