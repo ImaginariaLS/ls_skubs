@@ -2,13 +2,25 @@
 
 class PluginSkubs_HookSkubs extends Hook
 {
+    const ConfigKey = 'skubs';
+    const HooksArray = [
+        'template_profile_whois_activity_item'  =>  'InsertSkubStat',
+    ];
 
     /*
      * Регистрация событий на хуки
      */
     public function RegisterHook()
     {
-        $this->AddHook('template_profile_whois_activity_item', 'InsertSkubStat');
+        $plugin_config_key = $this::ConfigKey;
+        foreach ($this::HooksArray as $hook => $callback) {
+            $this->AddHook(
+                $hook,
+                $callback,
+                __CLASS__,
+                Config::Get("plugin.{$plugin_config_key}.hook_priority.{$hook}") ?? 1
+            );
+        }
     }
 
     public function InsertSkubStat($aData)
